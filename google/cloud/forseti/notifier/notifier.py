@@ -77,13 +77,14 @@ def convert_to_timestamp(violations):
 
 
 # pylint: disable=too-many-branches,too-many-statements
-def run(inventory_index_id, progress_queue, service_config=None):
+def run(inventory_index_id, scanner_index_id, progress_queue, service_config=None):
     """Run the notifier.
 
     Entry point when the notifier is run as a library.
 
     Args:
         inventory_index_id (int64): Inventory index id.
+        scanner_index_id (int64): Scanner index id.
         progress_queue (Queue): The progress queue.
         service_config (ServiceConfig): Forseti 2.0 service configs.
     Returns:
@@ -93,13 +94,18 @@ def run(inventory_index_id, progress_queue, service_config=None):
     global_configs = service_config.get_global_config()
     notifier_configs = service_config.get_notifier_config()
 
-    violations = None
     with service_config.scoped_session() as session:
-        if not inventory_index_id:
+        if scanner_index_id:
+            has_scanner_index_id_arg = True
+            inventory_index_id = (
+                DataAccess.get_inventory_index_id_by_scanner(session, scanner_index_id))
+        else:
+            has_scanner_index_id_arg = False
             inventory_index_id = (
                 DataAccess.get_latest_inventory_index_id(session))
-        scanner_index_id = scanner_dao.get_latest_scanner_index_id(
-            session, inventory_index_id)
+            scanner_index_id = scanner_dao.get_latest_scanner_index_id(
+                session, inventory_index_id)
+
         if not scanner_index_id:
             LOGGER.error(
                 'No success or partial success scanner index found for '
@@ -175,8 +181,8 @@ def run(inventory_index_id, progress_queue, service_config=None):
                         (cscc_notifier.CsccNotifier(inventory_index_id)
                          .run(violations_as_dict, gcs_path, mode,
                               organization_id))
-
-        InventorySummary(service_config, inventory_index_id).run()
+        if not has_scanner_index_id_arg:
+            InventorySummary(service_config, inventory_index_id).run()
 
         log_message = 'Notification completed!'
         progress_queue.put(log_message)
