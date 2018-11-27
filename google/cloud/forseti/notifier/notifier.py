@@ -77,7 +77,10 @@ def convert_to_timestamp(violations):
 
 
 # pylint: disable=too-many-branches,too-many-statements
-def run(inventory_index_id, scanner_index_id, progress_queue, service_config=None):
+def run(inventory_index_id,
+        scanner_index_id,
+        progress_queue,
+        service_config=None):
     """Run the notifier.
 
     Entry point when the notifier is run as a library.
@@ -96,13 +99,14 @@ def run(inventory_index_id, scanner_index_id, progress_queue, service_config=Non
 
     with service_config.scoped_session() as session:
         if scanner_index_id:
-            has_scanner_index_id_arg = True
             inventory_index_id = (
-                DataAccess.get_inventory_index_id_by_scanner(session, scanner_index_id))
+                DataAccess.get_inventory_index_id_by_scanner_index_id(
+                    session,
+                    scanner_index_id))
         else:
-            has_scanner_index_id_arg = False
-            inventory_index_id = (
-                DataAccess.get_latest_inventory_index_id(session))
+            if not inventory_index_id:
+                inventory_index_id = (
+                    DataAccess.get_latest_inventory_index_id(session))
             scanner_index_id = scanner_dao.get_latest_scanner_index_id(
                 session, inventory_index_id)
 
@@ -181,8 +185,8 @@ def run(inventory_index_id, scanner_index_id, progress_queue, service_config=Non
                         (cscc_notifier.CsccNotifier(inventory_index_id)
                          .run(violations_as_dict, gcs_path, mode,
                               organization_id))
-        if not has_scanner_index_id_arg:
-            InventorySummary(service_config, inventory_index_id).run()
+
+        InventorySummary(service_config, inventory_index_id).run()
 
         log_message = 'Notification completed!'
         progress_queue.put(log_message)

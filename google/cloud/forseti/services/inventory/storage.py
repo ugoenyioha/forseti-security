@@ -932,7 +932,10 @@ class DataAccess(object):
         return inventory_index.id
 
     @classmethod
-    def get_inventory_index_id_by_scanner(cls, session, scanner_index_id):
+    # pylint: disable=invalid-name
+    def get_inventory_index_id_by_scanner_index_id(cls,
+                                                   session,
+                                                   scanner_index_id):
         """List all inventory index entries.
 
         Args:
@@ -943,20 +946,15 @@ class DataAccess(object):
             int64: inventory index id
         """
 
-        inventory_index = (
-            session.query(InventoryIndex)
-                .outerjoin(ScannerIndex,
-                           ScannerIndex.inventory_index_id == InventoryIndex.id)
-                .filter(
-                and_(ScannerIndex.id == scanner_index_id,
-                     or_(InventoryIndex.inventory_status == 'SUCCESS',
-                         InventoryIndex.inventory_status == 'PARTIAL_SUCCESS'))
-            ).order_by(InventoryIndex.id.desc()).first())
-        session.expunge(inventory_index)
+        query_result = (
+            session.query(ScannerIndex).filter(
+                ScannerIndex.id == scanner_index_id
+            ).order_by(ScannerIndex.inventory_index_id.desc()).first())
+        session.expunge(query_result)
         LOGGER.info(
-            'Latest success/partial_success inventory index id is: %s',
-            inventory_index.id)
-        return inventory_index.id
+            'Found inventory_index_id %s from scanner_index_id %s.',
+            query_result.inventory_index_id, scanner_index_id)
+        return query_result.inventory_index_id
 
     @classmethod
     def get_inventory_indexes_older_than_cutoff(  # pylint: disable=invalid-name
