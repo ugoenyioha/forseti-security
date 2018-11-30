@@ -9,7 +9,7 @@ By combining Forseti Security and its Inventory with
 [D3.js](https://d3js.org/)  enables the generation of interactive
 architecture diagrams that represent your GCP environment.
 
-![visualize_gcp_architecture_with_Forseti](https://cdn-images-1.medium.com/max/1600/0*VS9cGmwYzNf3XNQ1)
+![visualize_gcp_architecture_with_Forseti](/images/news/2018-11-27/gcp-arch-viz.gif)
 
 Visualizations like this are important for understanding current state and
 can be dynamically generated. Take a look at the detailed [article](https://medium.com/@mikezinni/visualize-gcp-architecture-using-forseti-2-0-and-d3-js-ffc8fdf59450) to learn more!
