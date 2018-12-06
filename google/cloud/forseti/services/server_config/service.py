@@ -132,6 +132,67 @@ class GrpcServiceConfig(server_pb2_grpc.ServerServicer):
         return server_pb2.GetServerConfigurationReply(
             configuration=json.dumps(forseti_config))
 
+    def GetTracing(self, request, _):
+        """Get Log level.
+
+        Args:
+            request (PingRequest): The ping request.
+            _ (object): Context of the request.
+
+        Returns:
+            GetLogLevelReply: The GetLogLevelReply grpc object.
+        """
+        del request
+
+        tracing = logging.getLevelName(LOGGER.getEffectiveLevel())
+
+        LOGGER.info('Retrieving tracing state, tracing = %s',
+                    tracing)
+
+        return server_pb2.GetTracingReply(tracing=tracing)
+
+    def SetTracingEnable(self, request, _):
+        """Tracing Enable.
+
+        Args:
+            request (SetTracingEnableRequest): The grpc request
+                object.
+            _ (object): Context of the request.
+
+        Returns:
+            SetTracingEnableReply: The SetTracingEnableReply
+                grpc object.
+        """
+
+        LOGGER.info('Tracing is being enabled')
+        is_success, err_msg = self.service_config.update_configuration(
+            request.enable_tracing)
+
+        return server_pb2.SetTracingEnableReply(
+            is_success=is_success,
+            error_message=err_msg)
+
+    def SetTracingDisable(self, request, _):
+        """Disable Tracing.
+
+        Args:
+            request (SetTracingDisableRequest): The grpc request
+                object.
+            _ (object): Context of the request.
+
+        Returns:
+            SetTracingDisableReply: The SetTracingDisableReply
+                grpc object.
+        """
+
+        LOGGER.info('Tracing is being disabled')
+        is_success, err_msg = self.service_config.update_configuration(
+            request.disable_tracing)
+
+        return server_pb2.SetTracingDisableReply(
+            is_success=is_success,
+            error_message=err_msg)
+
 
 class GrpcServerConfigFactory(object):
     """Factory class for Server config service gRPC interface"""

@@ -222,6 +222,39 @@ class ServerConfigClient(ForsetiClient):
         request = server_pb2.GetServerConfigurationRequest()
         return self.stub.GetServerConfiguration(request)
 
+    def get_tracing(self):
+        """Gets the current tracing state.
+
+        Returns:
+            proto: the returned proto message.
+        """
+        request = server_pb2.GetTracingRequest()
+        return self.stub.GetTracing(request)
+
+    def set_tracing_enable(self, tracing):
+        """Enable tracing.
+
+        Args:
+            tracing (str): The updated tracing state.
+
+        Returns:
+            proto: the returned proto message.
+        """
+        request = server_pb2.SetTracingEnableRequest(tracing=tracing)
+        return self.stub.SetTracingEnable(request)
+
+    def set_tracing_disable(self, tracing):
+        """Disable tracing.
+
+        Args:
+            log_level (str): The updated tracing state.
+
+        Returns:
+            proto: the returned proto message.
+        """
+        request = server_pb2.SetTracingDisableRequest(tracing=tracing)
+        return self.stub.SetTracingDisable(request)
+
 
 class NotifierClient(ForsetiClient):
     """Notifier service allows the client to send violation notifications."""

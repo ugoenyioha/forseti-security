@@ -232,6 +232,27 @@ def define_server_parser(parent):
               'the server vm or a gcs path starts with gs://).')
     )
 
+    tracing = action_subparser.add_parser(
+        'tracing',
+        choices=['get', 'enable', 'disable'],
+        help='Tracing mode of the server.')
+
+    tracing_subparser = tracing.add_subparsers(
+        title='subaction',
+        dest='subaction')
+
+    _ = tracing_subparser.add_parser(
+        'get',
+        help='Get the tracing mode.')
+
+    _ = tracing_subparser.add_parser(
+        'enable',
+        help='Enable tracing.')
+
+    _ = tracing_subparser.add_parser(
+        'disable',
+        help='Disable tracing.')
+
 
 def define_model_parser(parent):
     """Define the model service parser.
