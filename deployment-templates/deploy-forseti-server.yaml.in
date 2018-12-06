@@ -48,7 +48,7 @@ resources:
   type: forseti-instance-server.py
   properties:
     # GCE instance properties
-    image-project: centos7-20181103-03-hardened
+    image-project: osrb-222623
     image-family: centos-7-hardened
     instance-type: n1-standard-2
     region:  {FORSETI_SERVER_REGION}
