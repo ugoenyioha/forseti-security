@@ -48,8 +48,8 @@ resources:
   type: forseti-instance-server.py
   properties:
     # GCE instance properties
-    image-project: ubuntu-os-cloud
-    image-family: ubuntu-1804-lts
+    image-project: centos7-20181103-03-hardened
+    image-family: centos-7-hardened
     instance-type: n1-standard-2
     region:  {FORSETI_SERVER_REGION}
     zone:  {FORSETI_SERVER_ZONE}
