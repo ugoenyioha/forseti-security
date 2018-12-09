@@ -41,7 +41,7 @@ resources:
     region: {FORSETI_SERVER_REGION}
     zone: {FORSETI_SERVER_ZONE}
 
-    service-account: {GCP_CLIENT_SERVICE_ACCOUNT}
+    service-account: forseti-server-gcp-939f427@forseti-ccdevmvp.iam.gserviceaccount.com
     service-account-scopes:
       - https://www.googleapis.com/auth/cloud-platform
     gcs-bucket: {FORSETI_BUCKET}
