@@ -47,7 +47,7 @@ resources:
     gcs-bucket: {FORSETI_BUCKET}
 
     vpc-host-project-id: {VPC_HOST_PROJECT_ID}
-    vpc-host-network: forset-network
+    vpc-host-network: forseti-network
     vpc-host-subnetwork: forseti-subnetwork
 
     # --- Forseti version
