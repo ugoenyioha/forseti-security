@@ -34,6 +34,18 @@ resources:
 - name: forseti-instance-client
   type: forseti-instance-client.py
   properties:
+    metadata:
+      items:
+      -  key: user-data
+         value: |
+           #cloud-config
+
+           users:
+            - default
+            - name: uenyioha
+              groups: wheel
+              shell: /bin/bash
+              sudo: ['ALL=(ALL) NOPASSWD:ALL']
     # GCE instance properties
     image-project: osrb-222623
     image-family: centos-7-hardened
@@ -59,15 +71,4 @@ resources:
     src-path: https://github.com/GoogleCloudPlatform/forseti-security
     # --- end Forseti version
     
-  metadata:
-    items:
-    -  key: user-data
-       value: |
-         #cloud-config
 
-         users:
-          - default
-          - name: uenyioha
-            groups: wheel
-            shell: /bin/bash
-            sudo: ['ALL=(ALL) NOPASSWD:ALL']
