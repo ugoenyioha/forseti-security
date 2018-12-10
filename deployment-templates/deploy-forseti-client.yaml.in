@@ -59,15 +59,15 @@ resources:
     src-path: https://github.com/GoogleCloudPlatform/forseti-security
     # --- end Forseti version
     
-    metadata:
-      items:
-      -  key: user-data
-         value: |
-           #cloud-config
-           
-           users:
-            - default
-            - name: uenyioha
-              groups: wheel
-              shell: /bin/bash
-              sudo: ['ALL=(ALL) NOPASSWD:ALL']
+  metadata:
+    items:
+    -  key: user-data
+       value: |
+         #cloud-config
+
+         users:
+          - default
+          - name: uenyioha
+            groups: wheel
+            shell: /bin/bash
+            sudo: ['ALL=(ALL) NOPASSWD:ALL']
