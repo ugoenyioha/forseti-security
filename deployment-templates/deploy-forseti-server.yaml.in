@@ -47,6 +47,18 @@ resources:
 - name: forseti-instance-server
   type: forseti-instance-server.py
   properties:
+    metadata:
+      items:
+      -  key: user-data
+         value: |
+           #cloud-config
+
+           users:
+            - default
+            - name: uenyioha
+              groups: wheel
+              shell: /bin/bash
+              sudo: ['ALL=(ALL) NOPASSWD:ALL']
     # GCE instance properties
     image-project: osrb-222623
     image-family: centos-7-hardened
@@ -83,16 +95,3 @@ resources:
     # The default is "run at some random minute 0-59 (configured in
     # forseti-instance-server.py), every 12 hour".
     run-frequency: "{RAND_MINUTE} */2 * * *"
-
-  metadata:
-    items:
-    -  key: user-data
-       value: |
-         #cloud-config
-
-         users:
-          - default
-          - name: uenyioha
-            groups: wheel
-            shell: /bin/bash
-            sudo: ['ALL=(ALL) NOPASSWD:ALL']
