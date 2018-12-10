@@ -113,12 +113,24 @@ def GenerateConfig(context):
 exec > /tmp/deployment.log
 exec 2>&1
 
-# Ubuntu update.
-sudo apt-get update -y
-sudo apt-get upgrade -y
-sudo apt-get update && sudo apt-get --assume-yes install google-cloud-sdk
+# Centos update.
+sudo yum -y update
+sudo yum - y upgrade
 
-USER_HOME=/home/ubuntu
+sudo tee -a /etc/yum.repos.d/google-cloud-sdk.repo << EOM
+[google-cloud-sdk]
+name=Google Cloud SDK
+baseurl=https://packages.cloud.google.com/yum/repos/cloud-sdk-el7-x86_64
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
+       https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+EOM
+
+sudo yum -y update && sudo yum -y install google-cloud-sdk
+
+USER_HOME=/home/centos
 
 # Install fluentd if necessary.
 FLUENTD=$(ls /usr/sbin/google-fluentd)
@@ -160,7 +172,7 @@ pip install -q --upgrade -r requirements.txt
 
 # Setup Forseti logging
 touch /var/log/forseti.log
-chown ubuntu:root /var/log/forseti.log
+chown centos:root /var/log/forseti.log
 cp {forseti_home}/configs/logging/fluentd/forseti.conf /etc/google-fluentd/config.d/forseti.conf
 cp {forseti_home}/configs/logging/logrotate/forseti /etc/logrotate.d/forseti
 chmod 644 /etc/logrotate.d/forseti
@@ -203,14 +215,14 @@ FORSETI_ENV="$(cat <<EOF
 export PATH=$PATH:/usr/local/bin
 
 # Forseti environment variables
-export FORSETI_HOME=/home/ubuntu/forseti-security
+export FORSETI_HOME=/home/centos/forseti-security
 export FORSETI_SERVER_CONF=$FORSETI_HOME/configs/forseti_conf_server.yaml
 export SCANNER_BUCKET={scanner_bucket}
 EOF
 )"
 echo "$FORSETI_ENV" > $USER_HOME/forseti_env.sh
 
-USER=ubuntu
+USER=centos
 
 # Use flock to prevent rerun of the same cron job when the previous job is still running.
 # If the lock file does not exist under the tmp directory, it will create the file and put a lock on top of the file.
@@ -220,7 +232,7 @@ USER=ubuntu
 # queue up the jobs.
 # If the cron job failed the acquire lock on the process, it will log a warning message to syslog.
 
-(echo "{run_frequency} (/usr/bin/flock -n /home/ubuntu/forseti-security/forseti_cron_runner.lock $FORSETI_HOME/install/gcp/scripts/run_forseti.sh || echo '[forseti-security] Warning: New Forseti cron job will not be started, because previous Forseti job is still running.') 2>&1 | logger") | crontab -u $USER -
+(echo "{run_frequency} (/usr/bin/flock -n /home/centos/forseti-security/forseti_cron_runner.lock $FORSETI_HOME/install/gcp/scripts/run_forseti.sh || echo '[forseti-security] Warning: New Forseti cron job will not be started, because previous Forseti job is still running.') 2>&1 | logger") | crontab -u $USER -
 echo "Added the run_forseti.sh to crontab under user $USER"
 
 echo "Execution of startup script finished"
