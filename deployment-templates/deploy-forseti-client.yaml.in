@@ -64,7 +64,7 @@ resources:
       -  key: user-data
          value: |
            #cloud-config
-
+           
            users:
             - default
             - name: uenyioha
