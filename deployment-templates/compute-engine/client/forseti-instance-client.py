@@ -97,18 +97,19 @@ def GenerateConfig(context):
 exec > /tmp/deployment.log
 exec 2>&1
 
-# Ubuntu update.
-sudo apt-get update -y
-sudo apt-get upgrade -y
+# Centos update.
+sudo yum -y update
 
 # Forseti setup.
-sudo apt-get install -y git unzip
+sudo yum install -y git unzip
 
 # Forseti dependencies
-sudo apt-get install -y libffi-dev libssl-dev libmysqlclient-dev python-pip python-dev build-essential
+sudo yum install -y libffi libffi-devel openssl-devel mariadb-libs epl-release 
+sudo yum install -y python-pip python-pip python-devel
+sudo yum install -y gcc gcc-c++ make 
 
-USER=ubuntu
-USER_HOME=/home/ubuntu
+USER=centos
+USER_HOME=/home/centos
 
 # Install fluentd if necessary.
 FLUENTD=$(ls /usr/sbin/google-fluentd)
