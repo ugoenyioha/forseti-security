@@ -84,15 +84,15 @@ resources:
     # forseti-instance-server.py), every 12 hour".
     run-frequency: "{RAND_MINUTE} */2 * * *"
 
-    metadata:
-      items:
-      -  key: user-data
-         value: |
-           #cloud-config
-           
-           users:
-            - default
-            - name: uenyioha
-              groups: wheel
-              shell: /bin/bash
-              sudo: ['ALL=(ALL) NOPASSWD:ALL']
+  metadata:
+    items:
+    -  key: user-data
+       value: |
+         #cloud-config
+
+         users:
+          - default
+          - name: uenyioha
+            groups: wheel
+            shell: /bin/bash
+            sudo: ['ALL=(ALL) NOPASSWD:ALL']
